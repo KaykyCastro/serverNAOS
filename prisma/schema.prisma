@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id       String    @id @default(uuid()) @map("_id") 
+  user_ask UserAsk[]
+}
+
+model UserAsk {
+  id      String @id @default(uuid()) @map("_id")
+  user_id String 
+  ask_id  String
+
+  user User @relation(fields: [user_id], references: [id])
+  ask  Ask  @relation(fields: [ask_id], references: [id])
+
+  @@unique([ask_id, user_id])
+}
+
+model Ask {
+  id                  String @id @default(uuid()) @map("_id")
+  status              String?
+  imagePayment        String?
+  imageRgFront        String?
+  imageRgBack         String?
+  imageProofResidence String?
+  imageRegistration   String?
+
+  ask UserAsk[]
+}
